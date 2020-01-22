@@ -1,16 +1,17 @@
 import React from 'react';
-import withGameContext from '../hoc/withGameContext';
+import { useGameContext } from '../context/GameContext';
+import { START_GAME } from '../context/types';
 import Defeat from './Defeat';
 import './gameStatus.css';
 
-function Home(props) {
-  const { startGame } = props.context;
-  const { isDefeat, isWin } = props.context.state;
+function Home() {
+  const [state, dispatch] = useGameContext();
 
   const handleStartGame = () => {
-    startGame();
+    dispatch({ type: START_GAME });
   };
 
+  const { isDefeat, isWin } = state;
   return (
     <div className="game__button">
       {isDefeat && <div>You Lost. Start Again ?</div>}
@@ -20,4 +21,4 @@ function Home(props) {
   );
 }
 
-export default withGameContext(Home);
+export default Home;

@@ -1,68 +1,70 @@
-import React, { Component } from 'react';
+import React, { useEffect, useReducer } from 'react';
+
+import { useGameContext } from '../context/GameContext';
+import { GAME_LOST, WRONG_GUESS } from '../context/types';
+
+import { getLetters, guessLetter } from '../services/utils';
+import WordService from '../services/wordService';
+
+import Attempts from './Attempts';
 import Input from './Input';
 import Letters from './Letters';
-import Attempts from './Attempts';
-import WordService from '../services/wordService';
-import WithGameContext from '../hoc/withGameContext';
-import { getLetters, guessLetter } from '../services/utils';
 
-class Word extends Component {
-  constructor(props) {
-    super(props);
+function Word() {
+  const [context, dispatch] = useGameContext();
 
-    this.state = {
-      word: '',
-      letters: [],
-      failedLetters: [],
-    };
+  const [state, setState] = useReducer(
+    (state, details) => ({
+      ...state,
+      ...details,
+    }),
+    { word: '', letters: [], failedLetters: [] }
+  );
 
-    this.getWord();
-  }
+  useEffect(() => {
+    getWord();
+  }, []);
 
-  getWord = async () => {
+  async function getWord() {
     const word = new WordService();
 
     await word.getWord();
-    console.log('word : ', word);
     const letters = getLetters(word.result);
-    this.setState({ word: word.result, letters });
+    console.log('word : ', word);
+
+    setState({ word: word.result, letters });
+  }
+
+  const wrongGuess = () => {
+    const { attempts } = context;
+
+    dispatch({ type: attempts > 3 ? GAME_LOST : WRONG_GUESS });
   };
 
-  handleLetterGuess = letter => {
-    const { wrongGuess } = this.props.context;
+  const handleLetterGuess = letter => {
+    const { failedLetters, letters } = state;
+    const newObj = guessLetter(letter, letters);
 
-    this.setState(({ letters, failedLetters }) => {
-      const newObj = guessLetter(letter, letters);
-      if (newObj)
-        return {
-          letters: newObj,
-        };
-      else {
-        wrongGuess();
-        return {
-          failedLetters: [...new Set([...failedLetters, letter])],
-        };
-      }
-    });
+    if (newObj) {
+      setState({ letters: newObj });
+    } else {
+      wrongGuess();
+      setState({ failedLetters: [...new Set([...failedLetters, letter])] });
+    }
   };
 
-  render() {
-    const { letters, failedLetters, word } = this.state;
-    if (!word)
-      return (
+  return (
+    <div>
+      {!state.word && (
         <div className="centered">
           <h2>Loading ...</h2>
         </div>
-      );
-
-    return (
-      <div>
-        <Letters letters={letters} />
-        <Attempts letters={failedLetters} />
-        <Input onGuess={this.handleLetterGuess} />
-      </div>
-    );
-  }
+      )}
+      <Letters letters={state.letters} />
+      <Attempts letters={state.failedLetters} />
+      <Input onGuess={handleLetterGuess} />
+    </div>
+  );
 }
 
-export default WithGameContext(Word);
+export default Word;
