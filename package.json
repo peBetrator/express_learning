@@ -1,14 +1,31 @@
 {
   "name": "express_learning",
   "version": "1.0.0",
-  "description": "Web Development with Node and Express",
-  "main": "index.js",
+  "description": "",
+  "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server/index.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "start": "node server/index.js"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peBetrator/express_learning.git"
+  },
+  "author": "peBetrator",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peBetrator/express_learning/issues"
+  },
+  "homepage": "https://github.com/peBetrator/express_learning#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.2",
+    "nodemon": "^2.0.2"
   }
 }

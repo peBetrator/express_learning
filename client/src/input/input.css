@@ -1,0 +1,36 @@
+.input__letter {
+  width: 50px;
+  height: 50px;
+  font-size: 50px;
+}
+
+.letters {
+  display: flex;
+}
+
+.letters * {
+  border-style: solid;
+  border-width: 1px;
+  height: 50px;
+  width: 50px;
+  margin: 3px;
+  font-size: 50px;
+}
+
+.failed__letters {
+  display: flex;
+}
+
+.failed__letters * {
+  margin: 5px;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: line-through;
+  color: red;
+}
+
+.centered {
+  position: fixed; /* or absolute */
+  top: 50%;
+  left: 50%;
+}
