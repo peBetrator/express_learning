@@ -9,4 +9,15 @@ export default class WordService {
       alert(error);
     }
   }
+
+  async getWordDescription(word) {
+    try {
+      if (word) {
+        const res = await axios.get(`/api/description?word=${word}`);
+        this.result = res.data;
+      }
+    } catch (error) {
+      alert(error);
+    }
+  }
 }

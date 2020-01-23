@@ -15,7 +15,7 @@ function Home() {
   return (
     <div className="game__button">
       {isDefeat && <div>You Lost. Start Again ?</div>}
-      {isWin && <div>Congrants</div>}
+      {isWin && <div>You guessed. Congrants !</div>}
       <button onClick={handleStartGame}>Start Game</button>
     </div>
   );

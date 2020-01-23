@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 
 import { useGameContext } from '../context/GameContext';
-import { GAME_LOST, WRONG_GUESS } from '../context/types';
+import { GAME_LOST, GAME_WON, WRONG_GUESS } from '../context/types';
 
 import { getLetters, guessLetter } from '../services/utils';
 import WordService from '../services/wordService';
@@ -9,6 +9,7 @@ import WordService from '../services/wordService';
 import Attempts from './Attempts';
 import Input from './Input';
 import Letters from './Letters';
+import Description from './Description';
 
 function Word() {
   const [context, dispatch] = useGameContext();
@@ -41,12 +42,19 @@ function Word() {
     dispatch({ type: attempts > 3 ? GAME_LOST : WRONG_GUESS });
   };
 
+  const checkGameStatus = letters => {
+    if (letters.every(({ guessed }) => guessed)) {
+      dispatch({ type: GAME_WON });
+    }
+  };
+
   const handleLetterGuess = letter => {
     const { failedLetters, letters } = state;
     const newObj = guessLetter(letter, letters);
 
     if (newObj) {
       setState({ letters: newObj });
+      checkGameStatus(newObj);
     } else {
       wrongGuess();
       setState({ failedLetters: [...new Set([...failedLetters, letter])] });
@@ -63,6 +71,7 @@ function Word() {
       <Letters letters={state.letters} />
       <Attempts letters={state.failedLetters} />
       <Input onGuess={handleLetterGuess} />
+      <Description word={state.word} />
     </div>
   );
 }

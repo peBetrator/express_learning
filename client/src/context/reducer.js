@@ -18,6 +18,9 @@ export default (state, action) => {
     case types.GAME_LOST: {
       return { ...state, isGame: false, isDefeat: true };
     }
+    case types.GAME_WON: {
+      return { ...state, isGame: false, isWin: true };
+    }
 
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
